@@ -10,6 +10,7 @@ app.UseCloudEvents();
 app.MapSubscribeHandler();
 
 app.MapPost("/A", [Topic("pubsub", "A")] (ILogger<Program> logger, MessageEvent item) => {
+    
     Console.WriteLine($"{item.MessageType}: {item.Message}");
     return Results.Ok();
 });
