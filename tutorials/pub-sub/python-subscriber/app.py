@@ -67,7 +67,15 @@ def subscribe():
 @app.route('/A', methods=['POST'])
 def a_subscriber():
     print(f'A: {request.json}', flush=True)
-    compressed = compress_lzss(request.json['data']['message'])
+    #Antes de comprimir, se llama a un calificador de textos
+    with DaprClient() as client:
+    # Publish an event/message using Dapr PubSub
+    result = client.publish_event(
+        pubsub_name='pubsub',
+        topic_name='textcheck',
+        data=json.dumps(textcheck),
+        data_content_type='application/json',
+    )
     # compressed = 'NO'
     print('Received message "{}" on topic "{}" has been compressed to the following text: "{}"'.format(request.json['data']['message'], request.json['topic'],compressed), flush=True)
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
