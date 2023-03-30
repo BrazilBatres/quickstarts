@@ -77,13 +77,37 @@ def a_subscriber():
         data_content_type='application/json',
     )
     # compressed = 'NO'
-    print('Received message "{}" on topic "{}" has been compressed to the following text: "{}"'.format(request.json['data']['message'], request.json['topic'],compressed), flush=True)
-    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+    #print('Received message "{}" on topic "{}" has been compressed to the following text: "{}"'.format(request.json['data']['message'], request.json['topic'],compressed), flush=True)
+    return result
 
 @app.route('/C', methods=['POST'])
 def c_subscriber():
     print(f'C: {request.json}', flush=True)
     print('Received message "{}" on topic "{}"'.format(request.json['data']['message'], request.json['topic']), flush=True)
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+
+@app.route('/textcheck', methods=['POST'])
+def textcheck_subscriber():
+    print(f'C: {request.json}', flush=True)
+    if request.json['data']['message'].contains("Ingeniero")
+        with DaprClient() as client:
+        # Publish an event/message using Dapr PubSub
+        result = client.publish_event(
+            pubsub_name='pubsub',
+            topic_name='RECHAZO',
+            data=json.dumps(RECHAZO),
+            data_content_type='application/json',
+        )
+        return result
+    else
+        compressed = compress_lzss(request.json['data']['message'])
+        print('Received message "{}" on topic "{}" has been compressed to the following text: "{}"'.format(request.json['data']['message'], request.json['topic'],compressed), flush=True)
+        return json.dumps({'success':True}), 200, {'ContentType':'application/json'}     
+
+@app.route('/RECHAZO', methods=['POST'])
+def textcheck_subscriber():
+    print(f'C: {request.json}', flush=True)
+    print('Se rechazo la solicitud por escribir un token prohibido'), flush=True)
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'}           
 
 app.run(port=5001)
